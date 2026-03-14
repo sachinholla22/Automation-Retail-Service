@@ -5,6 +5,7 @@ import numpy as np
 import json
 import shutil 
 import sys
+from helpers.validation import strip_column_names,check_schema_design,validate_primary_key,check_data_types_columns
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from configs.log_configs import setup_logs
@@ -21,8 +22,11 @@ def convert_to_df(csv_path):
 
 df=convert_to_df(csv_file)
 
+df.columns=strip_column_names(df.columns)
 res=check_schema_design(df)
+primary_res=validate_primary_key(df,"Transaction ID")
 
-dup=df.duplicated().any()
-print(dup)
+dtype_res=check_data_types_columns(df)
+print(dtype_res)
+      
 
