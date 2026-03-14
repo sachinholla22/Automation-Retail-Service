@@ -2,12 +2,16 @@ import os
 import pandas as pd
 import logging
 import sys
+from typing import List,Dict
+
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+from configs.configs import PRIMARY_KEY,Column_dtype_dictionary
 from configs.log_configs import setup_logs
 
 setup_logs()
 
+#Function to check the schema Design 
 def check_schema_design(df):
     logging.info("Checking inside the check_schema_design ")
     expected_column_names=('Transaction ID','Customer ID', 'Category','Item','Price Per Unit','Quantity','Total Spent','Payment Method','Location','Transaction Date','Discount Applied')
@@ -33,10 +37,10 @@ def check_schema_design(df):
         logging.error(f"Exception part occured for check_schema_desing, {str(e)}")   
         return {"success":False,"message":f"Exception like , {str(e)} "} 
 
-def validate_primary_key(df,column_name):
+#Function to validate the primary key
+def validate_primary_key(df,column_name:str)->Dict[str,any]:
     logging.info("Inside validate primary key function")
 
-    PRIMARY_KEY="Transaction ID"
     try:
 
         if column_name!=PRIMARY_KEY:
@@ -47,7 +51,38 @@ def validate_primary_key(df,column_name):
             if df[column_name].isna().any()==True:
                 logging.error("The primary key contains the null value")
                 raise Exception("The primary key contains null value")
+        return {"success":True,"message":"Primary key is valid"}    
     except Exception as e:
         logging.error(f"Error Exception occured {str(e)}")
+        return {"success":False,"message":f"Error occured ,{str(e)}"}
 
+def check_data_types_columns(df):
+    logging.info("Inside the function check_data_types_columns")
+    incorrect_dtypes_columns=[]
+
+    for key,value in df.dtypes.items():
+        is_correct_dtype=True
+
+        if value!=Column_dtype_dictionary.get(key):
+            logging.warning(f"Found the incorrect dtype column {key}")
+            is_correct_dtype=False
+        if not is_correct_dtype:
+            incorrect_dtypes_columns.append(key)
+            
+    if len(incorrect_dtypes_columns)==0:
+        return {"success":True,"message":"All the columns hold correct data types"}  
+    else:
+        return {"success":False,"message":"Column holds  incorrect data type","list":incorrect_dtypes_columns}   
+       
+
+    
+
+def strip_column_names(columns:List[str])->List[str]:
+    logging.info("Stripping the column names")
+    return columns.str.strip()
+
+
+
+
+    
 
