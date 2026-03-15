@@ -6,7 +6,7 @@ from typing import List,Dict
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-from configs.configs import PRIMARY_KEY,Column_dtype_dictionary
+from configs.configs import PRIMARY_KEY,Column_dtype_dictionary,EXPECTED_COLUMN_NAMES
 from configs.log_configs import setup_logs
 
 setup_logs()
@@ -14,7 +14,7 @@ setup_logs()
 #Function to check the schema Design 
 def check_schema_design(df):
     logging.info("Checking inside the check_schema_design ")
-    expected_column_names=('Transaction ID','Customer ID', 'Category','Item','Price Per Unit','Quantity','Total Spent','Payment Method','Location','Transaction Date','Discount Applied')
+    expected_column_names=EXPECTED_COLUMN_NAMES
     
     actual_column_length=len(expected_column_names)
     logging.info(f"Expected Column length, {actual_column_length}")
