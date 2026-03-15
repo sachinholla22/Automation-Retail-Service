@@ -56,7 +56,7 @@ def validate_primary_key(df,column_name:str)->Dict[str,any]:
         logging.error(f"Error Exception occured {str(e)}")
         return {"success":False,"message":f"Error occured ,{str(e)}"}
 
-def check_data_types_columns(df):
+def check_and_format_data_types_columns(df):
     logging.info("Inside the function check_data_types_columns")
     incorrect_dtypes_columns=[]
 
@@ -68,11 +68,15 @@ def check_data_types_columns(df):
             is_correct_dtype=False
         if not is_correct_dtype:
             incorrect_dtypes_columns.append(key)
+
             
-    if len(incorrect_dtypes_columns)==0:
-        return {"success":True,"message":"All the columns hold correct data types"}  
-    else:
-        return {"success":False,"message":"Column holds  incorrect data type","list":incorrect_dtypes_columns}   
+    if len(incorrect_dtypes_columns)>0:
+        for col in  incorrect_dtypes_columns:
+            df[col]=df[col].astype(Column_dtype_dictionary.get(col))
+    return df        
+            
+           
+
        
 
     
