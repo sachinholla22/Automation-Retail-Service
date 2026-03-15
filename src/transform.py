@@ -5,7 +5,7 @@ import numpy as np
 import json
 import shutil 
 import sys
-from helpers.validation import strip_column_names,check_schema_design,validate_primary_key,check_data_types_columns
+from helpers.validation import strip_column_names,check_schema_design,validate_primary_key,check_and_format_data_types_columns
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from configs.log_configs import setup_logs
@@ -26,5 +26,7 @@ df.columns=strip_column_names(df.columns)
 res=check_schema_design(df)
 primary_res=validate_primary_key(df,"Transaction ID")
 
-dtype_res=check_data_types_columns(df)
+df=check_and_format_data_types_columns(df)
 
+
+print(df.head(5))
