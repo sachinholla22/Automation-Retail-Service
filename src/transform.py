@@ -27,6 +27,4 @@ res=check_schema_design(df)
 primary_res=validate_primary_key(df,"Transaction ID")
 
 dtype_res=check_data_types_columns(df)
-print(dtype_res)
-      
 

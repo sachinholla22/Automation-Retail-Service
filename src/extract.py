@@ -1,19 +1,15 @@
 import os
-import boto3
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 from configs.log_configs import setup_logs
 import logging
-
+from configs.configs import s3_session
 
 load_dotenv()
 setup_logs()
 
 
-s3_session=boto3.session.Session(
-    aws_access_key_id=os.getenv('AWS_ACCESS_KEY'),
-    aws_secret_access_key=os.getenv('AWS_SECRET'),
-)
+
 
 def extract_from_s3(bucket_name,object_name,local_destination):
     logging.info("Inside the download function")
