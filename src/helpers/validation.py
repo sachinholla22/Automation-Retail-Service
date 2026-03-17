@@ -3,22 +3,36 @@ import pandas as pd
 import logging
 import sys
 from typing import List,Dict
-
+import yaml
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-from configs.configs import PRIMARY_KEY,Column_dtype_dictionary,EXPECTED_COLUMN_NAMES
+from configs.configs import PRIMARY_KEY
 from configs.log_configs import setup_logs
 
 setup_logs()
 
+#function for converting the yaml into schema key values
+
+def convert_yaml_schema(file_name:str):
+    if not file_name.endswith(".yaml") or not file_name.endswith(".yaml"):
+        logging.error("The uploaded file is not a valid yaml file")
+        raise Exception("The uploaded file is not a valid yaml file")
+    else:
+        with open(file_name,'r')as file:
+            logging.info("openeing yaml schema file")
+            schema=yaml.safe_load(file)
+    return schema   
+schema=convert_yaml_schema("../schema.yaml")     
+
 #Function to check the schema Design 
 def check_schema_design(df):
     logging.info("Checking inside the check_schema_design ")
-    expected_column_names=EXPECTED_COLUMN_NAMES
+    
+    expected_column_names=schema['expected_columns']
     
     actual_column_length=len(expected_column_names)
     logging.info(f"Expected Column length, {actual_column_length}")
-
+    
     try:
         if len(df.axes[1])!=actual_column_length:
 
@@ -32,6 +46,7 @@ def check_schema_design(df):
 
                 logging.error("Column name dont match")
                 raise Exception("Column name dont match ")
+        logging.info("Columns are having expected")    
         return {"success":True,"message":"Columns match the schema Design"}
     except Exception as e:
         logging.error(f"Exception part occured for check_schema_desing, {str(e)}")   
@@ -56,10 +71,10 @@ def validate_primary_key(df,column_name:str)->Dict[str,any]:
         logging.error(f"Error Exception occured {str(e)}")
         return {"success":False,"message":f"Error occured ,{str(e)}"}
 
-def check_and_format_data_types_columns(df):
+def check_and_format_data_types_columns(df)->pd.DataFrame:
     logging.info("Inside the function check_data_types_columns")
     incorrect_dtypes_columns=[]
-
+    Column_dtype_dictionary=schema['column_data_types']
     for key,value in df.dtypes.items():
         is_correct_dtype=True
 
@@ -68,18 +83,27 @@ def check_and_format_data_types_columns(df):
             is_correct_dtype=False
         if not is_correct_dtype:
             incorrect_dtypes_columns.append(key)
-
-            
     if len(incorrect_dtypes_columns)>0:
-        for col in  incorrect_dtypes_columns:
-            df[col]=df[col].astype(Column_dtype_dictionary.get(col))
-    return df        
+        convert_to_datatypes(df,incorrect_dtypes_columns)
+    return df    
             
-           
+     
+            
+def convert_to_datatypes(df:pd.DataFrame,col_list:List[str]): 
+    logging.info("Inside the converting to datatype function")
 
-       
-
+    dtypes_list=schema['column_data_types']
     
+    for items in col_list:
+        try:
+
+            if dtypes_list.get(items)=='datetime':
+                df[items]=pd.to_datetime(df[items],errors='coerce')
+            else:
+                df[items]=df[items].astype(dtypes_list.get(items))
+        except Exception as e:
+            logging.error(f"Couldnt convert the data type {str(dtypes_list.get)}")
+
 
 def strip_column_names(columns:List[str])->List[str]:
     logging.info("Stripping the column names")
