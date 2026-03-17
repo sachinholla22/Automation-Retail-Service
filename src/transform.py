@@ -6,8 +6,8 @@ import json
 import shutil 
 import sys
 from helpers.validation import strip_column_names,check_schema_design,validate_primary_key,check_and_format_data_types_columns
-
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from extract import create_qurantine_csv_file
+from load import upload_to_quarantine
 from configs.log_configs import setup_logs
 
 setup_logs()
@@ -20,13 +20,25 @@ def convert_to_df(csv_path):
     df=pd.read_csv(csv_path)
     return df
 
+is_correct_schema=True
 df=convert_to_df(csv_file)
 
 df.columns=strip_column_names(df.columns)
-res=check_schema_design(df)
-primary_res=validate_primary_key(df,"Transaction ID")
 
-df=check_and_format_data_types_columns(df)
+schema_result=check_schema_design(df)
+if schema_result['success']==False:
+    is_correct_schema=False
+    quarantine_file_name='invalid_schema.csv'
+    quarantine_path="../data/raw/quarantine"
+    create_qurantine_csv_file(df,os.path.join(quarantine_path,quarantine_file_name))
+    upload_to_quarantine(os.getenv('S3_BUCKET'),os.getenv('S3_QUARANTINE_SCHEMA_OBJECT'),os.path.join(quarantine_path,quarantine_file_name))
 
 
-print(df.head(5))
+
+
+if is_correct_schema:
+    primary_res=validate_primary_key(df,"Transaction ID")
+    df=check_and_format_data_types_columns(df)
+
+
+

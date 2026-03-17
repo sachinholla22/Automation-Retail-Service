@@ -26,5 +26,9 @@ def extract_from_s3(bucket_name,object_name,local_destination):
         logging.error('S3 download failed',exc_info=True)
         raise 
 
-      
+def create_qurantine_csv_file(df,file_name):
+    logging.info(f"converting df to quarantine for the file {str(file_name)}")
+    df.to_csv(file_name)
+    return {"success":True,"message":'created a quarantine file'}
+
 

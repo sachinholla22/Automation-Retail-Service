@@ -15,7 +15,7 @@ def upload_to_quarantine(bucket_name,object_name,file_name):
         object_name=file_name
 
     try:
-        s3.upload_file(bucket_name,object_name,file_name)
+        s3.upload_file(Bucket=bucket_name,Key=object_name,Filename=file_name)
         logging.info("Uploading the quarantine file")
         return  {"sucess":True,"message":"Uploaded the quarantine file successfully"}   
     except Exception as e:
