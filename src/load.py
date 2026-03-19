@@ -1,6 +1,4 @@
 import pandas as pd
-from botocore.exceptions import ClientError
-import boto3
 from configs.configs import s3_session
 from configs.log_configs import setup_logs
 import logging

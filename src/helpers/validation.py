@@ -4,15 +4,13 @@ import logging
 import sys
 from typing import List,Dict
 import yaml
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from configs.configs import PRIMARY_KEY
 from configs.log_configs import setup_logs
 
 setup_logs()
 
-#function for converting the yaml into schema key values
 
+#function for converting the yaml into schema key values
 def convert_yaml_schema(file_name:str):
     if not file_name.endswith(".yaml") or not file_name.endswith(".yaml"):
         logging.error("The uploaded file is not a valid yaml file")
@@ -22,7 +20,7 @@ def convert_yaml_schema(file_name:str):
             logging.info("openeing yaml schema file")
             schema=yaml.safe_load(file)
     return schema   
-schema=convert_yaml_schema("../schema.yaml")     
+schema=convert_yaml_schema('/opt/airflow/schema.yaml')     
 
 #Function to check the schema Design 
 def check_schema_design(df):
@@ -44,8 +42,8 @@ def check_schema_design(df):
         for col in df.columns:
             if col  not in expected_column_names:
 
-                logging.error("Column name dont match")
-                raise Exception("Column name dont match ")
+                logging.error(f"Column name dont match {col}")
+                raise Exception(f"Column name dont match {col}")
         logging.info("Columns are having expected")    
         return {"success":True,"message":"Columns match the schema Design"}
     except Exception as e:
@@ -53,10 +51,11 @@ def check_schema_design(df):
         return {"success":False,"message":f"Exception like , {str(e)} "} 
 
 #Function to validate the primary key
-def validate_primary_key(df,column_name:str)->Dict[str,any]:
+def validate_primary_key(df)->Dict[str,any]:
     logging.info("Inside validate primary key function")
 
     try:
+        column_name=df['Transaction ID']
 
         if column_name!=PRIMARY_KEY:
             logging.error("Wrong Primary Key!!")

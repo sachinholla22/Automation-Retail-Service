@@ -1,0 +1,26 @@
+# schema.yaml
+expected_columns:
+  - Transaction ID
+  - Customer ID
+  - Category
+  - Item
+  - Price Per Unit
+  - Quantity
+  - Total Spent
+  - Payment Method
+  - Location
+  - Transaction Date
+  - Discount Applied
+
+column_data_types:
+  Transaction ID: str
+  Customer ID: str
+  Category: str
+  Item: str
+  Price Per Unit: float
+  Quantity: float32
+  Total Spent: float
+  Payment Method: str
+  Location: str
+  Transaction Date: datetime
+  Discount Applied: bool

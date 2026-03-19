@@ -86,6 +86,7 @@ x-airflow-common:
     - ./src:/opt/airflow/src
     - ./configs:/opt/airflow/configs
     - ./logs:/opt/airflow/logs
+    - ./schema.yaml:/opt/airflow/schema.yaml
     
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
