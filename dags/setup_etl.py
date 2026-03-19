@@ -1,7 +1,11 @@
 
 from airflow.decorators import dag, task
 from datetime import datetime 
-from src.extract import extract_from_s3
+
+from src.extract import extract_from_s3,create_qurantine_csv_file
+
+from src.transform import transform
+from src.load import upload_to_quarantine
 import os
 from dotenv import load_dotenv
 from configs.log_configs import setup_logs
@@ -10,6 +14,7 @@ import logging
 
 setup_logs()
 load_dotenv()
+
 
 local_path='/opt/airflow/data/raw'
 local_file='local_retail_copy.csv'
@@ -35,7 +40,11 @@ def etl_process():
         
         extract_from_s3(s3_bucket_name,s3_object_name,local_full_path)
 
-    extract()
+    @task(task_id="transform")
+    def transforming():
+        transform()    
+
+    extract() >> transforming()
 
 etl_process()
 
