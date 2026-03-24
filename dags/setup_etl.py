@@ -4,7 +4,7 @@ from datetime import datetime
 
 from src.extract import extract_from_s3,create_qurantine_csv_file
 
-from src.transform import transform
+from src.transform import transform,enrich_datas
 from src.load import upload_to_quarantine
 import os
 from dotenv import load_dotenv
@@ -42,9 +42,15 @@ def etl_process():
 
     @task(task_id="transform")
     def transforming():
-        transform()    
+        return  transform()    
 
-    extract() >> transforming()
+    @task(task_id="enrich_datas")
+    def enrich_data(df):
+        enrich_datas(df)
+
+    transformed_res=transforming()
+    
+    extract() >> transformed_res >> enrich_data(transformed_res)
 
 etl_process()
 

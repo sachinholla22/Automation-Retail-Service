@@ -62,9 +62,9 @@ def validate_primary_key(df)->Dict[str,any]:
             raise Exception("Primary key given is different")
     
         else:
-            if df[column_name].isna().any()==True:
-                logging.error("The primary key contains the null value")
-                raise Exception("The primary key contains null value")
+            if df[column_name].isna().any()==True  or df[column_name].duplicated().any()==True:
+                logging.error("The primary key contains the null or duplicate values")
+                raise Exception("The primary key contains null or duplicate value")
         return {"success":True,"message":"Primary key is valid"}    
     except Exception as e:
         logging.error(f"Error Exception occured {str(e)}")
@@ -108,7 +108,23 @@ def strip_column_names(columns:List[str])->List[str]:
     logging.info("Stripping the column names")
     return columns.str.strip()
 
+def check_duplicate_columns_present(df):
+    logging.info("Inside Check Duplicate Function")
 
+    result=df.duplicated().any()
+    if result==True:
+        duplicated_data=df[df.duplicated()]
+        dup_counts=df.duplicated().sum()
+        logging.info(f"Found the duplicate record {duplicated_data}, count is {dup_counts}")
+    return result
+
+def drop_duplicates(df):
+    logging.info("Inside Drop Duplicate Function")
+    dup_cols=df[df.duplicated()]
+    logging.info(f"Dropping the duplicate columns like {dup_cols}")
+
+    df=df.drop_duplicates()
+    return df
 
 
     
