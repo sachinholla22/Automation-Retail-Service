@@ -3,7 +3,8 @@ import os
 from dotenv import load_dotenv
 import numpy as np
 import sys
-from src.helpers.validation import strip_column_names,check_schema_design,validate_primary_key,check_and_format_data_types_columns
+from src.helpers.validation import strip_column_names,check_schema_design,validate_primary_key,check_and_format_data_types_columns,check_duplicate_columns_present,drop_duplicates
+import logging
 from src.extract import create_qurantine_csv_file
 from src.load import upload_to_quarantine
 from configs.log_configs import setup_logs
@@ -38,6 +39,20 @@ def transform():
     if is_correct_schema:
         primary_res=validate_primary_key(df)
         df=check_and_format_data_types_columns(df)
+    return df
 
+
+def enrich_datas(df):
+    setup_logs()
+    
+    duplicate_res_check=check_duplicate_columns_present(df)
+    
+    if duplicate_res_check==True:
+        df=drop_duplicates(df)
+        logging.info(f"Length of df is {len(df)}")
+
+        
+
+    
 
 

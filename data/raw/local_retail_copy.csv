@@ -12574,3 +12574,8 @@ TXN_4009414,CUST_03,Beverages,Item_2_BEV,6.5,9.0,58.5,Cash,Online,2022-08-12,Fal
 TXN_5306010,CUST_11,Butchers,Item_7_BUT,14.0,10.0,140.0,Cash,Online,2024-08-24,
 TXN_5167298,CUST_04,Furniture,Item_7_FUR,14.0,6.0,84.0,Cash,Online,2023-12-30,True
 TXN_2407494,CUST_23,Food,Item_9_FOOD,17.0,3.0,51.0,Cash,Online,2022-08-06,
+TXN_1877982,CUST_18,Butchers,Item_25_BUT,41.0,9.0,369.0,Credit Card,In-store,2024-03-03,True
+TXN_1877823,CUST_18,Butchers,Item_25_BUT,41.0,9.0,369.0,Credit Card,In-store,2024-03-03,True
+TXN_1877555,CUST_18,Butchers,Item_25_BUT,41.0,9.0,369.0,Credit Card,In-store,2024-03-03,True
+TXN_1877823,CUST_18,Butchers,Item_25_BUT,41.0,9.0,369.0,Credit Card,In-store,2024-03-03,True
+TXN_1877823,CUST_18,Butchers,Item_25_BUT,41.0,9.0,369.0,Credit Card,In-store,2024-03-03,True

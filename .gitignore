@@ -5,3 +5,4 @@ __pycache__
 configs/configs.py
 logs.log
 *.pyc
+tester.py
