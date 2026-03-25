@@ -22,6 +22,39 @@ def convert_yaml_schema(file_name:str):
     return schema   
 schema=convert_yaml_schema('/opt/airflow/schema.yaml')     
 
+def get_schema_rules(schema: dict) -> dict:
+    null_config = schema.get("null_handling", {})
+    rules = null_config.get("rules", {})
+    thresholds = null_config.get("global_thresholds", {})
+
+    extracted_rules = {
+        # Thresholds
+        "numeric_null_threshold": thresholds.get("numeric_null_threshold", 0.1),
+        "drop_column_threshold": thresholds.get("drop_column_threshold", 0.4),
+
+        # String rules
+        "string_null_action": rules.get("string_columns", {}).get("action", "drop_row_if_null"),
+
+        # Numeric rules
+        "numeric_strategy_below_threshold": rules.get("numeric_columns", {})
+                                                    .get("strategy", {})
+                                                    .get("below_threshold", "drop_row"),
+
+        "numeric_strategy_above_threshold": rules.get("numeric_columns", {})
+                                                    .get("strategy", {})
+                                                    .get("above_threshold", "fill"),
+
+        "numeric_fill_values": rules.get("numeric_columns", {})
+                                    .get("fill_values", {}),
+
+        # Boolean rules
+        "boolean_fill_value": rules.get("boolean_columns", {}).get("fill_value", False),
+
+        # Datetime rules
+        "datetime_null_action": rules.get("datetime_columns", {}).get("action", "drop_row_if_null"),
+    }
+
+    return extracted_rules
 #Function to check the schema Design 
 def check_schema_design(df):
     logging.info("Checking inside the check_schema_design ")
@@ -127,5 +160,9 @@ def drop_duplicates(df):
     return df
 
 
-    
+def check_for_null(df):
+    return df.isna().any()
+
+def null_value_metadata(df):
+    pass    
 
